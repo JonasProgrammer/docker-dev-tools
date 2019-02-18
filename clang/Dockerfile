@@ -42,8 +42,11 @@ ENV CLANG_VERSION=${CLANG_VERSION}
 
 ENV CXXFLAGS="-stdlib=libc++"
 
-COPY --from=base /usr/local/* /usr/local/
+COPY --from=base /usr/local /usr/local-temp/
+
+RUN cp -R /usr/local-temp/* /usr/local && rm -Rf /usr/local-temp && chown -R build-dev:build-dev /usr/local/src
 
 USER build-dev
+WORKDIR /usr/local/src
 RUN mkdir -p .conan/profiles \
  && printf "[settings]\nos=Linux\nos_build=Linux\narch=x86_64\narch_build=x86_64\ncompiler=clang\ncompiler.version=${CLANG_VERSION}\ncompiler.libcxx=libc++\nbuild_type=Release\n[options]\n[build_requires]\n[env]\n" > ~/.conan/profiles/default
