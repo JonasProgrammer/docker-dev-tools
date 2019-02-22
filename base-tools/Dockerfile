@@ -10,10 +10,11 @@ ARG CONAN_FULL_VERSION=${CONAN_VERSION}.2
 
 ENV CMAKE_VERSION ${CMAKE_VERSION} 
 ENV CMAKE_MODULE_PATH /usr/local/share/cmake-${CMAKE_VERSION}/Modules
+ENV LD_LIBRARY_PATH /usr/local/lib
 
 WORKDIR /usr/local
 
-RUN apt-get update && apt-get install --no-install-recommends -y curl xz-utils libc6-dev libgcc-6-dev libxml2 make binutils && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install --no-install-recommends -y curl xz-utils libc6-dev libgcc-6-dev libxml2 make binutils gdb && rm -rf /var/lib/apt/lists/* \
  && curl -L ${CMAKE_DOWNLOAD} | tar xvz --strip-components=1 \
  && pip install conan==${CONAN_FULL_VERSION} \
 \
