@@ -44,7 +44,8 @@ ENV CXXFLAGS="-stdlib=libc++"
 
 COPY --from=base /usr/local /usr/local-temp/
 
-RUN cp -R /usr/local-temp/* /usr/local && rm -Rf /usr/local-temp && chown -R build-dev:build-dev /usr/local/src
+RUN vars="CLANG_VERSION CXXFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; done \
+ && cp -R /usr/local-temp/* /usr/local && rm -Rf /usr/local-temp && chown -R build-dev:build-dev /usr/local/src
 
 USER build-dev
 WORKDIR /usr/local/src
