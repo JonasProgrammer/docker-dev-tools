@@ -11,7 +11,8 @@ ARG CLANG_LIBCXX_DOWNLOAD=http://releases.llvm.org/${CLANG_FULL_VERSION}/libcxx-
 ARG CLANG_LIBCXXABI_DOWNLOAD=http://releases.llvm.org/${CLANG_FULL_VERSION}/libcxxabi-${CLANG_FULL_VERSION}.src.tar.xz
 
 ENV CLANG_VERSION=${CLANG_VERSION}
-
+# Just for CMake to stop complaining upon configuring
+# The downstream environment variables of the final image are defined below
 ENV CXXFLAGS="-stdlib=libc++"
 
 USER root
@@ -40,11 +41,14 @@ USER root
 ARG CLANG_VERSION=7.0
 ENV CLANG_VERSION=${CLANG_VERSION}
 
-ENV CXXFLAGS="-stdlib=libc++"
+# Add variables for the final image here
+ARG DEFAULT_CXX_FLAGS="-stdlib=libc++"
+ENV CXXFLAGS="${DEFAULT_CXX_FLAGS}"
+ENV CMAKE_CXX_FLAGS="${DEFAULT_CXX_FLAGS}"
 
 COPY --from=base /usr/local /usr/local-temp/
 
-RUN vars="CLANG_VERSION CXXFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; done \
+RUN vars="CLANG_VERSION CXXFLAGS CMAKE_CXX_FLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; done \
  && cp -R /usr/local-temp/* /usr/local && rm -Rf /usr/local-temp && chown -R build-dev:build-dev /usr/local/src
 
 USER build-dev
