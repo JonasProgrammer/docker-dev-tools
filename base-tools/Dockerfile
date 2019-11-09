@@ -15,7 +15,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 WORKDIR /usr/local
 
 RUN echo ". /etc/profile.local" >>/etc/profile; vars="CMAKE_VERSION CMAKE_MODULE_PATH LD_LIBRARY_PATH"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; done \
- && apt-get update && apt-get install --no-install-recommends -y curl xz-utils libc6-dev libgcc-8-dev libxml2 make binutils gdb && rm -rf /var/lib/apt/lists/* \
+ && apt-get update && apt-get install --no-install-recommends -y curl xz-utils libc6-dev libgcc-8-dev libtinfo5 libxml2 make binutils gdb && rm -rf /var/lib/apt/lists/* \
  && curl -L ${CMAKE_DOWNLOAD} | tar xvz --strip-components=1 \
  && pip install conan==${CONAN_FULL_VERSION} \
 \
