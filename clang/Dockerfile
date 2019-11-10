@@ -38,7 +38,7 @@ RUN cd /usr/src/llvm && mkdir -p libcxx-build \
 FROM ${BASE_IMAGE}
 USER root
 
-ARG CLANG_VERSION=7.0
+ARG CLANG_VERSION=9.0
 ENV CLANG_VERSION=${CLANG_VERSION}
 
 # Add variables for the final image here
