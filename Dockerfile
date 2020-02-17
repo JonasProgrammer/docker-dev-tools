@@ -34,19 +34,22 @@ USER root
 
 ARG LLVM_VERSION=10
 
+ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} LD=lld-${LLVM_VERSION} CXXFLAGS="-stdlib=libc++"
+
 RUN apt-get update \
  && apt-get install --no-install-recommends -y gnupg \
  && echo "deb http://apt.llvm.org/buster/ llvm-toolchain-buster-${LLVM_VERSION} main" > /etc/apt/sources.list.d/llvm.list \
  && curl -Lo - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add - \
  && apt-get update \
  && apt-get install -y --no-install-recommends clang-tools-${LLVM_VERSION} clang-${LLVM_VERSION} clangd-${LLVM_VERSION} libc++-${LLVM_VERSION}-dev libc++abi-${LLVM_VERSION}-dev libomp-${LLVM_VERSION}-dev lld-${LLVM_VERSION} lldb-${LLVM_VERSION} \
- && rm -rf /var/lib/apt/lists/*
-
-ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} CXXFLAGS=-stdlib=libc++
-
-RUN conan profile new --detect default && conan profile update settings.compiler.libcxx=libc++ default
+ && rm -rf /var/lib/apt/lists/* \
+ && vars="CC CXX LD CXXFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; export $i; done \
+ && ln -s clang-${LLVM_VERSION} /usr/bin/clang && ln -s clang-${LLVM_VERSION} /usr/bin/cc \
+ && ln -s clang++-${LLVM_VERSION} /usr/bin/clang++ && ln -s clang++-${LLVM_VERSION} /usr/bin/c++ && ln -s clang++-${LLVM_VERSION} /usr/bin/cxx
 
 USER build-dev
+
+RUN conan profile new --detect default && conan profile update settings.compiler.libcxx=libc++ default
 
 FROM jp-builder-llvm AS jp-builder-llvm-ssh
 USER root
