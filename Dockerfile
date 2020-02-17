@@ -42,9 +42,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends clang-tools-${LLVM_VERSION} clang-${LLVM_VERSION} clangd-${LLVM_VERSION} libc++-${LLVM_VERSION}-dev libc++abi-${LLVM_VERSION}-dev libomp-${LLVM_VERSION}-dev lld-${LLVM_VERSION} lldb-${LLVM_VERSION} \
  && rm -rf /var/lib/apt/lists/*
 
-ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION}
+ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} CXXFLAGS=-stdlib=libc++
 
-RUN conan profile new --detect default
+RUN conan profile new --detect default && conan profile update settings.compiler.libcxx=libc++ default
 
 USER build-dev
 
@@ -55,12 +55,12 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends openssh-server \
  && rm -rf /var/lib/apt/lists/* \
  && mkdir -p /run/sshd \
- && sed -ie 's/^X11.$/#\0/g' \
-         -e 's/^#\?X11Forwarding.*$/X11Forwarding no/g' \
-         -e 's/^#\?PasswordAuthentication.*$/PasswordAuthentication no/g' \
-         -e 's/^#\?PermitRootLogin.*$/PermitRootLogin no/g' \
-         -e 's/^#\?AllowTcpForwarding.*$/AllowTcpForwarding no\n/g'\
-         /etc/ssh/sshd_config
+ && sed -e 's/^X11.$/#\0/g' \
+        -e 's/^#\?X11Forwarding.*$/X11Forwarding no/g' \
+        -e 's/^#\?PasswordAuthentication.*$/PasswordAuthentication no/g' \
+        -e 's/^#\?PermitRootLogin.*$/PermitRootLogin no/g' \
+        -e 's/^#\?AllowTcpForwarding.*$/AllowTcpForwarding no\n/g'\
+        -i /etc/ssh/sshd_config
 
 COPY entrypoint.sh /entrypoint.sh
 
