@@ -11,9 +11,10 @@ jobs:
     
     strategy:
       matrix:
-        cmake: [ 1.18.0 ]
-        conan: [ 1_27_0 ]
-        clang: [ 10 ]
+        include:
+          - cmake: 1.18.0
+            conan: 1_27_0
+            clang: 10
     steps:
     - uses: actions/checkout@v2
       
@@ -31,7 +32,7 @@ jobs:
         dockerfile: Dockerfile.clang
         repository: jonasprogrammer/dev-tools
         tags: clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
-        build_args: BASE_IMAGE=base-cm${{matrix.cmake}}-cn${{matrix.conan}}
+        build_args: BASE_IMAGE=jonasprogrammer/dev-tools:base-cm${{matrix.cmake}}-cn${{matrix.conan}},LLVM_VERSION=${{matrix.clang}}
         username: ${{secrets.DOCKER_USERNAME}}
         password: ${{secrets.DOCKER_TOKEN}}
     - name: Build ssh image
@@ -40,6 +41,6 @@ jobs:
         dockerfile: Dockerfile.clang
         repository: jonasprogrammer/dev-tools
         tags: ssh-clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
-        build_args: BASE_IMAGE=clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
+        build_args: BASE_IMAGE=jonasprogrammer/dev-tools:clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
         username: ${{secrets.DOCKER_USERNAME}}
         password: ${{secrets.DOCKER_TOKEN}}
