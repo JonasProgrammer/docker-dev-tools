@@ -1,0 +1,25 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+
+ARG ADDITIONAL_PACKAGES="vim"
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends openssh-server ${ADDITIONAL_PACKAGES} \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /run/sshd \
+ && sed -e 's/^X11.$/#\0/g' \
+        -e 's/^#\?X11Forwarding.*$/X11Forwarding no/g' \
+        -e 's/^#\?PasswordAuthentication.*$/PasswordAuthentication no/g' \
+        -e 's/^#\?PermitRootLogin.*$/PermitRootLogin no/g' \
+        -e 's/^#\?AllowTcpForwarding.*$/AllowTcpForwarding no\n/g'\
+        -i /etc/ssh/sshd_config
+
+COPY entrypoint.ssh.sh /entrypoint.sh
+
+EXPOSE 22
+
+RUN mkdir -p .ssh && chmod 700 .ssh && chown build-dev:build-dev .ssh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/sbin/sshd", "-D"]
