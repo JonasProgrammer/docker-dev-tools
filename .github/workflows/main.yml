@@ -17,7 +17,13 @@ jobs:
             clang: 10
     steps:
     - uses: actions/checkout@v2
-      
+
+    - name: Get docker cache
+      run: |
+        docker pull jonasprogrammer/dev-tools:base-cm${{matrix.cmake}}-cn${{matrix.conan}} || true
+        docker pull jonasprogrammer/dev-tools:clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}} || true
+        docker pull jonasprogrammer/dev-tools:ssh-clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}} || true
+
     - name: Build base image
       uses: docker/build-push-action@v1.1.0
       with:
