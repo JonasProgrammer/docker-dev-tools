@@ -22,11 +22,11 @@ RUN apt-get update \
     lldb-${LLVM_VERSION} \
  && rm -rf /var/lib/apt/lists/* \
  && vars="CC CXX LD CXXFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; export $i; done \
- && ( [ -e /usr/bin/clang ] || ln -s clang-${LLVM_VERSION} /usr/bin/clang ) \
- && ( [ -e /usr/bin/cc ] || ln -s clang-${LLVM_VERSION} /usr/bin/cc ) \
- && ( [ -e /usr/bin/clang++ ] || ln -s clang++-${LLVM_VERSION} /usr/bin/clang++ ) \
- && ( [ -e /usr/bin/c++ ] || ln -s clang++-${LLVM_VERSION} /usr/bin/c++ ) \
- && ( [ -e /usr/bin/cxx ] || ln -s clang++-${LLVM_VERSION} /usr/bin/cxx )
+ && ( [ -e /usr/local/bin/clang ] || ln -s clang-${LLVM_VERSION} /usr/local/bin/clang ) \
+ && ( [ -e /usr/local/bin/cc ] || ln -s clang-${LLVM_VERSION} /usr/local/bin/cc ) \
+ && ( [ -e /usr/local/bin/clang++ ] || ln -s clang++-${LLVM_VERSION} /usr/local/bin/clang++ ) \
+ && ( [ -e /usr/local/bin/c++ ] || ln -s clang++-${LLVM_VERSION} /usr/local/bin/c++ ) \
+ && ( [ -e /usr/local/bin/cxx ] || ln -s clang++-${LLVM_VERSION} /usr/local/bin/cxx )
 
 USER build-dev
 

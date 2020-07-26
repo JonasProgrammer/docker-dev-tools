@@ -44,7 +44,7 @@ jobs:
     - name: Build ssh image
       uses: docker/build-push-action@v1.1.0
       with:
-        dockerfile: Dockerfile.clang
+        dockerfile: Dockerfile.ssh
         repository: jonasprogrammer/dev-tools
         tags: ssh-clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
         build_args: BASE_IMAGE=jonasprogrammer/dev-tools:clang-${{matrix.clang}}-cm${{matrix.cmake}}-cn${{matrix.conan}}
