@@ -13,7 +13,7 @@ RUN ( grep -Fxq '. /etc/profile.local' /etc/profile || ( echo ". /etc/profile.lo
     echo 'export PATH=/opt/conda/bin:$PATH' >> /etc/profile.local \
  && groupadd --gid ${GID} build-dev \
  && adduser --gid ${GID} --uid ${UID} --gecos '' --no-create-home --home /usr/local/src --disabled-password --disabled-login build-dev \
- && mkdir -p /usr/local/src && chown -R build-dev:build-dev /usr/local/src
+ && mkdir -p /usr/local/src && chown -R build-dev:build-dev /usr/local/src /opt/conda
 
 USER build-dev
 WORKDIR /usr/local/src
