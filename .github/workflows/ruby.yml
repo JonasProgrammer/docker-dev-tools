@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ ruby ]
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        include:
+          - ruby: 2.5
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get docker cache
+      run: |
+        docker pull jonasprogrammer/dev-tools:ruby-${{matrix.ruby} || true
+
+    - name: Build base image
+      uses: docker/build-push-action@v1.1.0
+      with:
+        dockerfile: Dockerfile.ruby
+        repository: jonasprogrammer/dev-tools
+        tags: ruby-${{matrix.ruby}}
+        build_args: BASE_IMAGE=ruby:${{matrix.ruby}}
+        username: ${{secrets.DOCKER_USERNAME}}
+        password: ${{secrets.DOCKER_TOKEN}}
+    - name: Build ssh image
+      uses: docker/build-push-action@v1.1.0
+      with:
+        dockerfile: Dockerfile.ssh
+        repository: jonasprogrammer/dev-tools
+        tags: ssh-ruby-${{matrix.ruby}}
+        build_args: BASE_IMAGE=jonasprogrammer/dev-tools:ruby-${{matrix.ruby}}
+        username: ${{secrets.DOCKER_USERNAME}}
+        password: ${{secrets.DOCKER_TOKEN}}
