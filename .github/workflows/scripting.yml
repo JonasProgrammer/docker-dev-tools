@@ -31,8 +31,7 @@ jobs:
         echo "::set-env name=BASE_IMAGE::continuumio/anaconda3:${{matrix.conda}}"
         echo "::set-env name=DOCKERFILE::conda"
 
-    - name: Build ruby image
-      if: ${{matrix.ruby}}
+    - name: Build base image
       uses: docker/build-push-action@v1.1.0
       with:
         dockerfile: Dockerfile.${{env.DOCKERFILE}}
