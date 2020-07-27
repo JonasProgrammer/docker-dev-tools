@@ -1,4 +1,4 @@
-name: CI
+name: CI-Ruby
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
 
     - name: Get docker cache
       run: |
-        docker pull jonasprogrammer/dev-tools:ruby-${{matrix.ruby} || true
+        docker pull jonasprogrammer/dev-tools:ruby-${{matrix.ruby}} || true
 
     - name: Build base image
       uses: docker/build-push-action@v1.1.0
