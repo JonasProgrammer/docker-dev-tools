@@ -12,7 +12,7 @@ RUN apt-get update \
         -e 's/^#\?X11Forwarding.*$/X11Forwarding no/g' \
         -e 's/^#\?PasswordAuthentication.*$/PasswordAuthentication no/g' \
         -e 's/^#\?PermitRootLogin.*$/PermitRootLogin no/g' \
-        -e 's/^#\?AllowTcpForwarding.*$/AllowTcpForwarding no\n/g'\
+        -e 's/^#\?AllowTcpForwarding.*$/AllowTcpForwarding yes\n/g'\
         -i /etc/ssh/sshd_config
 
 COPY entrypoint.ssh.sh /entrypoint.sh
