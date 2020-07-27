@@ -10,7 +10,7 @@ WORKDIR /usr/local
 
 RUN ( grep -Fxq '. /etc/profile.local' /etc/profile || ( echo ". /etc/profile.local" >>/etc/profile ) ) && \
     ( env |grep -e '^RUBY\|^GEM' | sed -e 's/^/export /' >> /etc/profile.local ) && \
-    echo 'export PATH=$GEM_HOME/bin:$PATH' >> /etc/profile.local \
+    echo 'export PATH=/opt/conda/bin:$PATH' >> /etc/profile.local \
  && groupadd --gid ${GID} build-dev \
  && adduser --gid ${GID} --uid ${UID} --gecos '' --no-create-home --home /usr/local/src --disabled-password --disabled-login build-dev \
  && mkdir -p /usr/local/src && chown -R build-dev:build-dev /usr/local/src

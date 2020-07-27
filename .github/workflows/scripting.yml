@@ -13,26 +13,32 @@ jobs:
       matrix:
         include:
           - ruby: 2.5
+          - conda: 2020.02
     steps:
     - uses: actions/checkout@v2
 
-    - name: Get docker cache
-      run: |
-        docker pull jonasprogrammer/dev-tools:ruby-${{matrix.ruby}} || true
-        docker pull jonasprogrammer/dev-tools:anaconda3-${{matrix.anaconda3}} || true
-
-    - name: Set ruby tag
+    - name: Setup ruby build
       if: ${{matrix.ruby}}
       run: |
         echo "::set-env name=BUILD_TAG::ruby-${{matrix.ruby}}"
+        echo "::set-env name=BASE_IMAGE::ruby:${{matrix.ruby}}"
+        echo "::set-env name=DOCKERFILE::ruby"
+
+    - name: Setup conda build
+      if: ${{matrix.conda}}
+      run: |
+        echo "::set-env name=BUILD_TAG::conda-${{matrix.conda}}"
+        echo "::set-env name=BASE_IMAGE::continuumio/anaconda3:${{matrix.conda}}"
+        echo "::set-env name=DOCKERFILE::conda"
+
     - name: Build ruby image
       if: ${{matrix.ruby}}
       uses: docker/build-push-action@v1.1.0
       with:
-        dockerfile: Dockerfile.ruby
+        dockerfile: Dockerfile.${{env.DOCKERFILE}}
         repository: jonasprogrammer/dev-tools
         tags: ${{env.BUILD_TAG}}
-        build_args: BASE_IMAGE=ruby:${{matrix.ruby}}
+        build_args: BASE_IMAGE=${{env.BASE_IMAGE}}
         username: ${{secrets.DOCKER_USERNAME}}
         password: ${{secrets.DOCKER_TOKEN}}
 
