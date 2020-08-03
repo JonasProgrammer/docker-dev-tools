@@ -13,6 +13,7 @@ jobs:
       matrix:
         include:
           - ruby: 2.5
+          - ruby: 2.6 
           - conda: 2020.02
     steps:
     - uses: actions/checkout@v2
