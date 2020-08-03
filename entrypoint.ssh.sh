@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-file=./.ssh/authorized_keys
+file="$HOME/.ssh/authorized_keys"
 
 rm -f $file && touch $file && chown build-dev:build-dev $file
 
