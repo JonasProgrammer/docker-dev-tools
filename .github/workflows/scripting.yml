@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         include:
+          - ruby: 2.2
           - ruby: 2.5
           - ruby: 2.6 
           - conda: 2020.02
