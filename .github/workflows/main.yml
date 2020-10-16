@@ -12,9 +12,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - cmake: 1.18.0
-            conan: 1_27_0
-            clang: 10
+          - cmake: 3.18.4
+            conan: 1_30_2
+            clang: 11
     steps:
     - uses: actions/checkout@v2
 
