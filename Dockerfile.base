@@ -1,10 +1,10 @@
 ARG BASE_IMAGE=debian:buster
 FROM ${BASE_IMAGE} AS jp-builder-base-image
 
-ARG CMAKE_VERSION=3.18.0
+ARG CMAKE_VERSION=3.19.3
 ARG CMAKE_DOWNLOAD=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz
 
-ARG CONAN_VERSION=1_27_1
+ARG CONAN_VERSION=1_32_1
 ARG CONAN_DOWNLOAD=https://dl.bintray.com/conan/installers/conan-ubuntu-64_${CONAN_VERSION}.deb
 
 ARG UID=4200
