@@ -1,14 +1,16 @@
 ARG BASE_IMAGE
+
 FROM ${BASE_IMAGE}
 USER root
 
-ARG LLVM_VERSION=10
+ARG LLVM_REPO_DIST=bullseye
+ARG LLVM_VERSION=13
 
-ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} LD=lld-${LLVM_VERSION} CXXFLAGS="-stdlib=libc++"
+ENV CC=clang-${LLVM_VERSION} CXX=clang++-${LLVM_VERSION} LD=lld-${LLVM_VERSION} CXXFLAGS="-stdlib=libc++" LDFLAGS="-lc++abi -fuse-ld=ldd-${LLVM_VERSION}"
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gnupg \
- && echo "deb http://apt.llvm.org/buster/ llvm-toolchain-buster-${LLVM_VERSION} main" > /etc/apt/sources.list.d/llvm.list \
+ && echo "deb http://apt.llvm.org/${LLVM_REPO_DIST}/ llvm-toolchain-${LLVM_REPO_DIST}-${LLVM_VERSION} main" > /etc/apt/sources.list.d/llvm.list \
  && curl -Lo - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add - \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -21,7 +23,7 @@ RUN apt-get update \
     lld-${LLVM_VERSION} \
     lldb-${LLVM_VERSION} \
  && rm -rf /var/lib/apt/lists/* \
- && vars="CC CXX LD CXXFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; export $i; done \
+ && vars="CC CXX LD CXXFLAGS LDFLAGS"; for i in $vars; do echo $i=\"$(eval echo \$$i)\" >>/etc/profile.local; echo export $i >>/etc/profile.local; export $i; done \
  && ( [ -e /usr/local/bin/clang ] || ln -s clang-${LLVM_VERSION} /usr/local/bin/clang ) \
  && ( [ -e /usr/local/bin/cc ] || ln -s clang-${LLVM_VERSION} /usr/local/bin/cc ) \
  && ( [ -e /usr/local/bin/clang++ ] || ln -s clang++-${LLVM_VERSION} /usr/local/bin/clang++ ) \
@@ -30,4 +32,10 @@ RUN apt-get update \
 
 USER build-dev
 
-RUN conan profile new --detect default && conan profile update settings.compiler.libcxx=libc++ default
+RUN conan profile new --detect default \
+ && conan profile update settings.compiler.libcxx=libc++ default \
+ && conan profile update settings.env.CC="${CC}" default \
+ && conan profile update settings.env.CXX="${CXX}" default \
+ && conan profile update settings.env.LD="${LD}" default \
+ && conan profile update settings.env.CXXFLAGS="${CXXFLAGS}" default \
+ && conan profile update settings.env.LDFLAGS="${LDFLAGS}" default
