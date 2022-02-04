@@ -3,6 +3,7 @@ name: CI-Scripting
 on:
   push:
     branches: [ scripting ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,7 +14,6 @@ jobs:
       matrix:
         include:
           - ruby: 2.2
-          - ruby: 2.5
           - ruby: 2.6 
           - conda: 2020.02
     steps:
@@ -22,16 +22,16 @@ jobs:
     - name: Setup ruby build
       if: ${{matrix.ruby}}
       run: |
-        echo "::set-env name=BUILD_TAG::ruby-${{matrix.ruby}}"
-        echo "::set-env name=BASE_IMAGE::ruby:${{matrix.ruby}}"
-        echo "::set-env name=DOCKERFILE::ruby"
+        echo "BUILD_TAG=ruby-${{matrix.ruby}}" >> $GITHUB_ENV
+        echo "BASE_IMAGE=ruby:${{matrix.ruby}}" >> $GITHUB_ENV
+        echo "DOCKERFILE=ruby" >> $GITHUB_ENV
 
     - name: Setup conda build
       if: ${{matrix.conda}}
       run: |
-        echo "::set-env name=BUILD_TAG::conda-${{matrix.conda}}"
-        echo "::set-env name=BASE_IMAGE::continuumio/anaconda3:${{matrix.conda}}"
-        echo "::set-env name=DOCKERFILE::conda"
+        echo "BUILD_TAG=conda-${{matrix.conda}}" >> $GITHUB_ENV
+        echo "BASE_IMAGE=continuumio/anaconda3:${{matrix.conda}}" >> $GITHUB_ENV
+        echo "DOCKERFILE=conda" >> $GITHUB_ENV
 
     - name: Build base image
       uses: docker/build-push-action@v1.1.0
